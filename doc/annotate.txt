@@ -1,0 +1,125 @@
+*annotate.nvim*  Attach notes to lines of code without touching the file
+
+Author: alannap
+
+==============================================================================
+CONTENTS                                                     *annotate-contents*
+
+1. Introduction...........................................|annotate-introduction|
+2. Commands....................................................|annotate-commands|
+3. Setup..........................................................|annotate-setup|
+4. Project Integration................................|annotate-projects|
+5. Workflow....................................................|annotate-workflow|
+
+==============================================================================
+1. Introduction                                         *annotate-introduction*
+
+annotate.nvim stores line-based annotations outside code files. Each
+annotation is tied to a file path and line number, then persisted per project.
+
+The plugin is especially useful when you want to hand structured review notes
+to an AI agent or another reviewer. A single copy command exports the file
+path, line number, annotation text, and current code context in plain text.
+
+==============================================================================
+2. Commands                                                  *annotate-commands*
+
+                                                            *:AnnotateAdd*
+:AnnotateAdd          Add or edit an annotation on the current line.
+
+                                                            *:AnnotateDelete*
+:AnnotateDelete       Delete the annotation on the current line.
+
+                                                            *:AnnotateList*
+:AnnotateList         Open the editable annotation manager buffer.
+
+                                                            *:AnnotateCopy*
+:AnnotateCopy         Copy the current project's annotations for AI handoff.
+
+                                                            *:AnnotateRefresh*
+:AnnotateRefresh      Reload annotations from disk and rerender buffers.
+
+                                                            *:AnnotateToggleInline*
+:AnnotateToggleInline Toggle inline annotation text in code buffers.
+
+Legacy compatibility aliases are also available:
+  :AnnotationAdd
+  :AnnotationDelete
+  :AnnotationList
+  :AnnotationsCopy
+  :AnnotationsRefresh
+  :AnnotationsToggleInline
+
+==============================================================================
+3. Setup                                                        *annotate-setup*
+
+Example:
+
+>
+  require("annotate").setup({
+    project = {
+      integration = "auto",
+    },
+    keymaps = {
+      ["<leader>na"] = {
+        action = function()
+          require("annotate").add_or_edit_current()
+        end,
+        opts = { desc = "Add annotation" },
+      },
+    },
+  })
+<
+
+Supported options:
+
+project.integration~
+  "auto"             Use neovim-project when available, otherwise use cwd.
+  "cwd"              Always use the current working directory.
+  "neovim-project"   Prefer neovim-project, but still fall back to cwd.
+
+project.root~
+  Optional custom root resolver function.
+
+project.reload_on_session_load~
+  Reload the annotation store after |User| SessionLoadPost.
+
+store.dir~
+  Directory name under the resolved project root. Default: ".nvim"
+
+store.file~
+  Store file name. Default: "annotations.json"
+
+==============================================================================
+4. Project Integration                                    *annotate-projects*
+
+annotate.nvim does not require coffebar/neovim-project.
+
+When neovim-project is available, annotate.nvim uses its active project root to
+decide where to load and save annotations. This makes annotation storage follow
+your project/session workflow naturally.
+
+When neovim-project is not installed, annotate.nvim falls back to the current
+working directory. Each cwd gets its own store at:
+
+  <root>/.nvim/annotations.json
+
+==============================================================================
+5. Workflow                                                *annotate-workflow*
+
+Recommended workflow:
+
+1. Use :AnnotateAdd on the lines you want to flag.
+2. Open :AnnotateList to review or edit notes in one place.
+3. Use :w inside the list buffer to save changes.
+4. Use :AnnotateCopy to copy a structured plain-text export.
+5. Paste that export into any AI agent or review workflow.
+
+Inside the annotation list:
+  <CR>   jump to the selected annotation
+  yy     copy the AI handoff export
+  :w     save edits
+  q      close without saving
+  <Esc>  close without saving
+
+vim:tw=78:ts=8:noet:ft=help:norl:
