@@ -48,7 +48,7 @@ That makes it useful for:
 
 ```lua
 {
-  "your-name/annotate.nvim",
+  "alan-napieralski/annotate.nvim",
   config = function()
     require("annotate").setup()
   end,
@@ -73,7 +73,7 @@ That makes it useful for:
 
 ```lua
 {
-  "your-name/annotate.nvim",
+  "alan-napieralski/annotate.nvim",
   dependencies = {
     "coffebar/neovim-project",
   },
@@ -115,6 +115,10 @@ require("annotate").setup({
     height = 0.6,
     border = "rounded",
     title = " Annotate ",
+    -- When true, closing the manager with q or <Esc> saves pending edits
+    -- (e.g. entries deleted with dd). When false, q/<Esc> discard them and
+    -- only :w saves.
+    save_on_close = false,
   },
   export = {
     copy_to_plus = true,
@@ -208,7 +212,7 @@ Inside the manager:
 - press `:w` to save
 - press `<CR>` to jump to the selected file and line
 - press `yy` to copy the AI handoff export
-- press `q` or `<Esc>` to close without saving
+- press `q` or `<Esc>` to close without saving (or to save and close, if `ui.save_on_close = true`)
 
 ## AI export
 
@@ -225,13 +229,13 @@ The export is plain text and includes:
 Example:
 
 ```text
-Project: /Users/alannap/Developer/Food Hevy
+Project: /path/to/your-project
 Purpose: Share these annotations with any AI agent or reviewer so they can understand the exact file, line, note, and nearby code context quickly.
 
-File: Food Hevy/Theme/Typography.swift
+File: src/theme/typography.ts
 Line: 52
 Annotation: rename this helper so it describes the default app font role
-Code: func appText(_ size: CGFloat, _ weight: Font.Weight = .bold) -> some View {
+Code: export function appText(size: number, weight: FontWeight = "bold") {
 ```
 
 This is intentionally generic so you can paste it into any AI coding assistant or review tool.
@@ -268,6 +272,16 @@ This keeps the workflow:
 - explicit
 - easy to inspect
 - easy to ignore with Git if you do not want annotation files committed
+
+## Development
+
+Run the test suite with [plenary.nvim](https://github.com/nvim-lua/plenary.nvim):
+
+```sh
+make test
+```
+
+See [`tests/README.md`](tests/README.md) for details.
 
 ## Roadmap
 

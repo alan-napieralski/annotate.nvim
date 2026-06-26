@@ -63,9 +63,20 @@ local function ensure_buffer()
 		return state.bufnr
 	end
 
+	-- Reuse the named buffer if it already exists (e.g. after a plugin reload
+	-- that dropped our module state) instead of failing with E95.
+	local existing = vim.fn.bufnr("annotate://list")
+	if existing ~= -1 and vim.api.nvim_buf_is_valid(existing) then
+		state.bufnr = existing
+		return existing
+	end
+
 	local bufnr = vim.api.nvim_create_buf(false, true)
 	state.bufnr = bufnr
 
+	-- An acwrite buffer needs a name, otherwise `:w` aborts with E32 before
+	-- BufWriteCmd fires and edits (e.g. `dd` to delete an entry) are lost.
+	vim.api.nvim_buf_set_name(bufnr, "annotate://list")
 	vim.bo[bufnr].buftype = "acwrite"
 	vim.bo[bufnr].bufhidden = "hide"
 	vim.bo[bufnr].swapfile = false
@@ -95,6 +106,9 @@ local function ensure_buffer()
 end
 
 local function close_window()
+	if config.get().ui.save_on_close and state.bufnr and vim.bo[state.bufnr].modified then
+		M.sync_from_buffer({ silent = true })
+	end
 	if state.winid and vim.api.nvim_win_is_valid(state.winid) then
 		vim.api.nvim_win_close(state.winid, true)
 	end
@@ -158,7 +172,11 @@ function M.open()
 	})
 
 	vim.bo[bufnr].modifiable = true
-	vim.notify("Use :w to save annotation list edits. q or <Esc> will close without saving.", vim.log.levels.INFO)
+	if config.get().ui.save_on_close then
+		vim.notify("Use :w to save annotation list edits. q or <Esc> will save and close.", vim.log.levels.INFO)
+	else
+		vim.notify("Use :w to save annotation list edits. q or <Esc> will close without saving.", vim.log.levels.INFO)
+	end
 	vim.keymap.set("n", "<CR>", function()
 		local line = vim.api.nvim_win_get_cursor(0)[1]
 		local item = (vim.b[bufnr].annotate_items or {})[line]

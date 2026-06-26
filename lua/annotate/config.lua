@@ -27,6 +27,7 @@ local defaults = {
 		height = 0.6,
 		border = "rounded",
 		title = " Annotate ",
+		save_on_close = false,
 	},
 	export = {
 		copy_to_plus = true,

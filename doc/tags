@@ -1,0 +1,13 @@
+:AnnotateAdd	annotate.txt	/*:AnnotateAdd*
+:AnnotateCopy	annotate.txt	/*:AnnotateCopy*
+:AnnotateDelete	annotate.txt	/*:AnnotateDelete*
+:AnnotateList	annotate.txt	/*:AnnotateList*
+:AnnotateRefresh	annotate.txt	/*:AnnotateRefresh*
+:AnnotateToggleInline	annotate.txt	/*:AnnotateToggleInline*
+annotate-commands	annotate.txt	/*annotate-commands*
+annotate-contents	annotate.txt	/*annotate-contents*
+annotate-introduction	annotate.txt	/*annotate-introduction*
+annotate-projects	annotate.txt	/*annotate-projects*
+annotate-setup	annotate.txt	/*annotate-setup*
+annotate-workflow	annotate.txt	/*annotate-workflow*
+annotate.nvim	annotate.txt	/*annotate.nvim*
