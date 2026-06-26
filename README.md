@@ -6,6 +6,11 @@ Attach notes to lines of code without touching the file.
 
 That export is the core idea: you can annotate exactly where and why something matters, then copy the full context with file paths, line numbers, annotation text, and code snippets so an AI reviewer can understand the request immediately without relying on one specific harness or comment system.
 
+> [!NOTE]
+> `annotate.nvim` is in **beta testing**. Expect rough edges. If you hit a bug or
+> have an idea, please [open an issue](https://github.com/alan-napieralski/annotate.nvim/issues)
+> or send a pull request — feedback and contributions are very welcome.
+
 ## Features
 
 - Add or edit annotations on the current line
@@ -59,7 +64,7 @@ That makes it useful for:
 
 ```lua
 {
-  dir = "~/Developer/annotate.nvim",
+  dir = "/path/to/annotate.nvim",
   name = "annotate.nvim",
   config = function()
     require("annotate").setup()
